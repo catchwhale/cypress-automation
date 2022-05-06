@@ -1,0 +1,18 @@
+{
+	"defaultCommandTimeout": 60000,
+	"responseTimeout": 120000,
+	"requestTimeout": 120000,
+	"pageLoadTimeout": 180000,
+	"ignoreTestFiles": ["*.md", "*.ts", "*.DS_Store"],
+	"nodeVersion": "system",
+	"video": false,
+	"reporter": "junit",
+	"reporterOptions": {
+		"mochaFile": "results/report.xml",
+		"toConsole": true
+	},
+	"viewportWidth": 1280,
+	"viewportHeight": 800,
+	"watchForFileChanges": true,
+	"chromeWebSecurity": false
+}
