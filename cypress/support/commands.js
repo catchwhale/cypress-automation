@@ -95,8 +95,11 @@
     }
     
   });
-
-  Cypress.Commands.add('verifySubmitButtonCalculator', (buttonLabel, statusButton = 'enabled', clk = false) => {
+  /*
+   * button either disabled or not and if enabled, have an option to click it
+   *
+   */
+  Cypress.Commands.add('submitButtonCalculator', (buttonLabel, statusButton = 'enabled', clk = false) => {
     
     cy.get("button[type='button']").eq(9).should(`be.${statusButton}`).then(() => {
       //click button
@@ -105,7 +108,11 @@
       }
     })
   });
-
+  
+  /*
+   * Check if button is disabled
+   *
+   */
   Cypress.Commands.add('verifyButtonDisabled', () => {
     
     cy.get("button[type='button']").eq(11).should("be.disabled")

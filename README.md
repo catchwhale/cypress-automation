@@ -1,6 +1,6 @@
-# QA SaaS Automation
+# QA Automation
 
-Welcome to QA TAM Automation.
+Welcome to QA Poplar Homes Automation.
 
 ## Folder Structure
 
