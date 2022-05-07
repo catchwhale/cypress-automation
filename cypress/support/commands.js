@@ -24,23 +24,25 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-//Visit to rental calculator menu
-  Cypress.Commands.add('navigateToCalculator', () => {
-    cy.visit(`${Cypress.env('baseURL')}/l/${Cypress.env('tenantId')}#overview`);
-      cy.wait(1100)
-      cy.contains('h3', "Find out if you're prequalified").click();
-      cy.wait(300)
-  });
-  
+
+
   /*
    * Get the current Price
    * for the rental & saved in the cypress environment file
    */
   Cypress.Commands.add('getCurrentPrice', () => {
-    cy.get("span[class='current_price']").then(function($price) {
-      const get_price = $price.text().split('$');  // need to split by '$' since the raw data is like this $2,500.00$2,500.00
-      Cypress.env('current_price', get_price[1].replace(',', '')); // do clean up by replace '
-    });
+    cy.visit(`${Cypress.env('baseurl')}/l/${Cypress.env('tenantId')}`);
+      cy.get("span[class='current_price']").then(function($price) {
+        Cypress.env('current_price', $price.text().split('$')[1].replace(',', '')); // need to split by '$' since the raw data is returning $2,500.00$2,500.00
+      });
+  });
+  
+  /*
+   * Visit to rental calculator menu
+   * 
+   */
+  Cypress.Commands.add('navToCalculator', () => {
+    cy.contains('h3', "Find out if you're prequalified").click();
   });
 
   /*
@@ -110,12 +112,11 @@
   });
   
   /*
-   * Check if button is disabled
+   * Check if button is disabled or enbabled
    *
    */
-  Cypress.Commands.add('verifyButtonDisabled', () => {
-    
-    cy.get("button[type='button']").eq(11).should("be.disabled")
+  Cypress.Commands.add('verifyButton', (statusButton, index) => {
+    cy.get("button[type='button']").eq(index).should(`be.${statusButton}`)
   });
 
 

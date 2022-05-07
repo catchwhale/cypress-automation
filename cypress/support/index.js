@@ -25,8 +25,3 @@ Cypress.on("uncaught:exception", (err, runnable) => {
 	// failing the test when application under test throws exception
 	return false;
 });
-
-
-afterEach(() => {
-    cy.clearCookies();
-  })
