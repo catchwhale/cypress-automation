@@ -51,12 +51,12 @@ For details on the script, please check the package.json on script section.
 
 ## Test Case Creation
 
-Verify the renter is qualified for a monthly income with 250 percent based on the monthly rent
-Verify the renter is not qualified to have a monthly income at most 249 percent based on the monthly rent
-Verify the renter is qualified or not with monthly income and credit score on randomly selected data
-Verify banner messages and cross|check mark icons are correct
-Verify the renter is qualified having a credit score between 650 to 999
-Verify the text labels are correct
-Verify submit button will be enabled if monthly income and credit score are valid inputs
-Verify monthly income input field should accept maximum of 12 characters
+1. Verify the renter is qualified for a monthly income with 250 percent based on the monthly rent
+2. Verify the renter is not qualified to have a monthly income at most 249 percent based on the monthly rent
+3. Verify the renter is qualified or not with monthly income and credit score on randomly selected data
+4. Verify banner messages and cross|check mark icons are correct
+5. Verify the renter is qualified having a credit score between 650 to 999
+6. Verify the text labels are correct
+7. Verify submit button will be enabled if monthly income and credit score are valid inputs
+8. Verify monthly income input field should accept maximum of 12 characters
 
