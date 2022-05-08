@@ -40,7 +40,7 @@ context("Calculator App", () => {
     it('Verify the renter is not qualified to have a monthly income at most 249 percent based on the monthly rent', () => {
       data_income_decimal = 2.49
       monthly_income = data_income_decimal * Cypress.env('current_price')
-      cy.typeFieldsInCalculator(monthly_income, qualified_credit_score)
+      cy.typeFieldsInCalculator(monthly_income.toFixed(0), qualified_credit_score)
       cy.clickButton("Find Out"); //check if submit button "Find Out" is enabled or not, if enabled click the button
       cy.verifyResponseInCalculator(Message["status"].disqualified, data_income_decimal.toFixed(1), qualified_credit_score, 'cross-mark', 'check-mark')
 
@@ -50,7 +50,6 @@ context("Calculator App", () => {
     it('Verify renter is qualified or not with monthly income and credit score on randomly selected data', () => {
       const maxLimit = 999,
         total_random_data = 6;
-      var income_status;
   
       for (const cnt of Array(total_random_data).keys()) {
         data_credit_score = Math.floor(Math.random() * maxLimit)
