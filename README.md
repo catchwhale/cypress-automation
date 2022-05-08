@@ -16,10 +16,6 @@ Welcome to QA Poplar Homes Automation.
 
 - from the command(windows)/shell(linux), send the command "npm install". This will install all dependencies including the cypress. for references of the needed items to install are mentioned in package.json
 
-## Pre-Requisite
-
-- add the latest cypress.env.json to ./cypress folder
-
 ## Requirements
 
 As for those who wishes to use this automation, the IDE that we are using is Visual Studio Code.
@@ -49,9 +45,18 @@ After the cloning of this repository, please run "npm install" on windows and "s
 
 To run the application, there are few ways to perform.
 
-For UI view, just send the command "npm run cy:open". For details on the script, please check the package.json on script section.
-
-For headless view, just send the command "./node_modules/.bin/cypress run --spec './cypress/integration/<folder or test case>'"
+For UI view, just send the command 
+"npm run cy:open". 
+For details on the script, please check the package.json on script section.
 
 ## Test Case Creation
+
+Verify the renter is qualified for a monthly income with 250 percent based on the monthly rent
+Verify the renter is not qualified to have a monthly income at most 249 percent based on the monthly rent
+Verify the renter is qualified or not with monthly income and credit score on randomly selected data
+Verify banner messages and cross|check mark icons are correct
+Verify the renter is qualified having a credit score between 650 to 999
+Verify the text labels are correct
+Verify submit button will be enabled if monthly income and credit score are valid inputs
+Verify monthly income input field should accept maximum of 12 characters
 
