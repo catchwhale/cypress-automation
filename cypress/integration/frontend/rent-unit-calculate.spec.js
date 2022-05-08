@@ -1,147 +1,132 @@
 /*
  * @LastEditors: Joseph Ocero
  * @DateCreated: 2022-05-04 14:32:26
- * @LastEditTime: 2022-05-06 22:43:32
+ * @LastEditTime: 2022-05-08 12:43:32
  * @Description: Adding more use scenarious for PoplarHomes Calculator App
  **/
 
 /// <reference types="cypress" />
 import { Message } from "../../support/config";
+import { getRandomFloat, checkNumber } from "../../support/helper";
 
 context("Calculator App", () => {
-  describe('Basic features for house rental calculator', () => {
-    var current_price;
-    var monthly_income;
-    // const clk = true
-    var credit_score = 650;
-    var income_decimal = 2.5;
-    const clk = true;
+  describe('Calculate monthly income for renter', () => {
+    var monthly_income,
+      data_credit_score,
+      data_income_decimal,
+      data_income,
+      income_status,
+      icon_pass,
+      icon_notpass;
+    const qualified_credit_score = 650,
+        qualified_income_decimal = 2.5;
 
     before(() => {
       cy.getCurrentPrice()
       cy.navToCalculator()
-      monthly_income = income_decimal * Cypress.env('current_price')
+      monthly_income = qualified_income_decimal * Cypress.env('current_price')
     });
-    // afterEach(() => {
-    //   cy.submitButtonCalculator("Start Over", 'enabled', clk);
-    // })
-  
+
     it('Verify the renter is qualified for a monthly income  with 250 percent higher based on the monthly rent', () => {
-      monthly_income = income_decimal * Cypress.env('current_price')
-      cy.typeFieldsInCalculator(monthly_income, credit_score); //250% = 2.5 in decimal given credit_score is qualified
-      cy.submitButtonCalculator("Find Out", 'enabled', clk)
-      cy.verifyResponseInCalculator(Message["status"].qualified, income_decimal, credit_score, 'check-mark', 'check-mark')
+      monthly_income = qualified_income_decimal * Cypress.env('current_price')
+      cy.typeFieldsInCalculator(monthly_income, qualified_credit_score); //250% = 2.5 in decimal given credit_score is qualified
+      cy.clickButton("Find Out")
+      cy.verifyResponseInCalculator(Message["status"].qualified, qualified_income_decimal, qualified_credit_score, 'check-mark', 'check-mark')
       cy.verifyButton('enabled', 9)
 
-      cy.submitButtonCalculator("Start Over", 'enabled', clk);
+      cy.clickButton("Start Over");
     });
 
     it('Verify the renter is not qualified to have a monthly income at most 249 percent based on the monthly rent', () => {
-      income_decimal = 2.49
-      monthly_income = income_decimal * Cypress.env('current_price')
-      cy.typeFieldsInCalculator(monthly_income, credit_score)
-      cy.submitButtonCalculator("Find Out", 'enabled', clk); //check if submit button "Find Out" is enabled or not, if enabled click the button
-      cy.verifyResponseInCalculator(Message["status"].disqualified, income_decimal.toFixed(1), credit_score, 'cross-mark', 'check-mark')
+      data_income_decimal = 2.49
+      monthly_income = data_income_decimal * Cypress.env('current_price')
+      cy.typeFieldsInCalculator(monthly_income, qualified_credit_score)
+      cy.clickButton("Find Out"); //check if submit button "Find Out" is enabled or not, if enabled click the button
+      cy.verifyResponseInCalculator(Message["status"].disqualified, data_income_decimal.toFixed(1), qualified_credit_score, 'cross-mark', 'check-mark')
 
-      cy.submitButtonCalculator("Start Over", 'enabled', clk);
+      cy.clickButton("Start Over");
     });
 
-    it('Verify renter is qualified or not with monthly income and credit score randomly selected data', () => {
+    it('Verify renter is qualified or not with monthly income and credit score on randomly selected data', () => {
       const maxLimit = 999,
         total_random_data = 6;
-      var income_status, 
-        rand_credit_score,
-        rand_income_decimal;
+      var income_status;
   
       for (const cnt of Array(total_random_data).keys()) {
-        rand_credit_score = Math.floor(Math.random() * maxLimit)
-        rand_income_decimal = getRandomFloat(1.5, 3.5, 2).toFixed(1); // round up to one decimal place
+        data_credit_score = Math.floor(Math.random() * maxLimit)
+        data_income_decimal = getRandomFloat(1.5, 3.5, 2).toFixed(1); // round up to one decimal place
         income_status = Message["status"].disqualified;
-        if (rand_credit_score >= credit_score && rand_income_decimal >= 2.5){
+        if (data_credit_score >= qualified_credit_score && data_income_decimal >= 2.5){
             income_status = Message["status"].qualified;
         }
-        monthly_income = rand_income_decimal * Cypress.env('current_price')
-        cy.typeFieldsInCalculator(monthly_income, rand_credit_score)
-        cy.submitButtonCalculator("Find Out", 'enabled', clk)
-        cy.verifyResponseInCalculator(income_status, rand_income_decimal, rand_credit_score)
+        monthly_income = data_income_decimal * Cypress.env('current_price');
 
-        cy.submitButtonCalculator("Start Over", 'enabled', clk)
+        cy.typeFieldsInCalculator(monthly_income, data_credit_score)
+        cy.clickButton("Find Out")
+        cy.verifyResponseInCalculator(income_status, data_income_decimal, data_credit_score)
+
+        cy.clickButton("Start Over")
       }
     });
 
-    it('Verify banner messages and cross-check mark logo are correct', () => {
+    it('Verify banner messages and cross|check mark icons are correct', () => {
 
-      var dataIncome_status = [
-        [2.5, 650], //income = passed, credit_score = passed
+      data_income = [
         [2.6, 649], //income = passed, credit_score = failed
+        [2.5, 650], //income = passed, credit_score = passed
         [2.4, 650], //income = failed, credit_score = passed
         [2.3, 649]  //income = failed, credit_score = failed
       ];
-      var income_status;
-      var passed;
-      var notpassed;
-      var income_decimal;
 
-      dataIncome_status.forEach(function (data) {
-        credit_score = data[1];
-        income_decimal = data[0];
+      data_income.forEach(function (data) {
+        data_credit_score = data[1];
+        data_income_decimal = data[0];
         income_status = Message["status"].disqualified;
-        passed = "cross-mark";
-        notpassed = "cross-mark";
-        if (credit_score >= 650 && income_decimal >= 2.5){
+        icon_pass = "cross-mark";
+        icon_notpass = "cross-mark";
+        if (data_credit_score >= 650 && data_income_decimal >= 2.5){
           income_status = Message["status"].qualified;
-          passed = "check-mark"
-          notpassed = "check-mark"
-        }else if (credit_score <= 649 && income_decimal >= 2.5){
-          passed = "check-mark"
-        }else if (credit_score >= 650 && income_decimal <= 2.49){
-          notpassed = "check-mark"
+          icon_pass = "check-mark"
+          icon_notpass = "check-mark"
+        }else if (data_credit_score <= 649 && data_income_decimal >= 2.5){
+          icon_pass = "check-mark"
+          icon_notpass = "cross-mark";
+
+        }else if (data_credit_score >= 650 && data_income_decimal <= 2.49){
+          icon_pass = "cross-mark"
+          icon_notpass = "check-mark";
+
         }else {}
        
-        monthly_income = income_decimal * Cypress.env('current_price')
-        cy.typeFieldsInCalculator(monthly_income, credit_score)
-        cy.submitButtonCalculator("Find Out", 'enabled', clk)
-        cy.verifyResponseInCalculator(income_status, income_decimal, credit_score, passed, notpassed)
+        monthly_income = data_income_decimal * Cypress.env('current_price')
+        cy.typeFieldsInCalculator(monthly_income, data_credit_score)
+        cy.clickButton("Find Out")
+        cy.verifyResponseInCalculator(income_status, data_income_decimal, data_credit_score, icon_pass, icon_notpass)
         
-        cy.submitButtonCalculator("Start Over", 'enabled', clk)
+        cy.clickButton("Start Over")
       });
     });
 
-    it('Verify the qualified renter have at least 650 credit score up to 999', () => {
+    it('Verify the renter is qualified having a credit score between 650 to 999', () => {
 
-      var dataIncome_status = [
-        [2.5, 649], //income = failed, credit_score = failed, Status = disqualified
-        [2.5, 650], //income = passed, credit_score = passed, Status = qualified
-        [2.5, 800], //income = passed, credit_score = passed, Status = qualified
-        [2.5, 999]  //income = passed, credit_score = passed, Status = qualified
-      ];
-      var income_status;
-      var passed;
-      var notpassed;
-      var income_decimal;
-    
-      dataIncome_status.forEach(function (data) {
-        credit_score = data[1];
-        income_decimal = data[0];
+      var credit_scores = [1, 99, 400, 500, 649, 650, 651, 800, 900, 999 ];
+      
+      credit_scores.forEach(function (score) {
         income_status = Message["status"].disqualified;
-        passed = "cross-mark";
-        notpassed = "cross-mark";
-        if (credit_score >= 650 && income_decimal >= 2.5){
+        icon_pass = "check-mark";
+        icon_notpass = "cross-mark";
+        monthly_income = qualified_income_decimal * Cypress.env('current_price');
+
+        if (score >= qualified_credit_score){
           income_status = Message["status"].qualified;
-          passed = "check-mark"
-          notpassed = "check-mark"
-        }else if (credit_score <= 649 && income_decimal >= 2.5){
-          passed = "check-mark"
-        }else if (credit_score >= 650 && income_decimal <= 2.49){
-          notpassed = "check-mark"
+          icon_notpass = "check-mark"
         }else {}
-       
-        monthly_income = income_decimal * Cypress.env('current_price')
-        cy.typeFieldsInCalculator(monthly_income, credit_score)
-        cy.submitButtonCalculator("Find Out", 'enabled', clk)
-        cy.verifyResponseInCalculator(income_status, income_decimal, credit_score, passed, notpassed)
         
-        cy.submitButtonCalculator("Start Over", 'enabled', clk)
+        cy.typeFieldsInCalculator(monthly_income, score)
+        cy.clickButton("Find Out")
+        cy.verifyResponseInCalculator(income_status, qualified_income_decimal, score, icon_pass, icon_notpass)
+        
+        cy.clickButton("Start Over")
       });
     });
     
@@ -151,7 +136,7 @@ context("Calculator App", () => {
 
     it('Verify submit button will be enabled if monthly income and credit score are valid inputs', () => {
           
-      var dataIncome_status = [
+      data_income = [
         [6000, 650], //button = enabled;  [monthly_income, credit_score]
         [6000, 100.00], //button = enabled
         [-1, 650],    //button = disabled
@@ -164,15 +149,14 @@ context("Calculator App", () => {
         [6000, 0]   //button = disabled
       ];
 
-      var monthly_income;
     
-      dataIncome_status.forEach(function (data) {
-        credit_score = data[1];
+      data_income.forEach(function (data) {
+        data_credit_score = data[1];
         monthly_income = data[0];
 
-        cy.typeFieldsInCalculator(monthly_income, credit_score);
-
-        if ((checkNumber(credit_score) && credit_score > 0) && (checkNumber(monthly_income) && monthly_income > 0)){
+        cy.typeFieldsInCalculator(monthly_income, data_credit_score);
+        //valid inputs are monthly income & credit score are numbers greater than 0
+        if ((checkNumber(data_credit_score) && data_credit_score > 0) && (checkNumber(monthly_income) && monthly_income > 0)){
           cy.verifyButton('enabled', 9)
         }else {
           cy.verifyButton('disabled', 11);
@@ -182,21 +166,18 @@ context("Calculator App", () => {
 
     it('Verify monthly income input field should only accept maximum of 12 characters', () => {
           
-      var data_income_status = [
+      data_income = [
           [123456789012, 650], //button = enabled
           [123456789.01, 650], //button = enabled
           [1234567890.12, 650], //button = disabled
           [1234567890123, 650], //button = disabled
       ];
-    
-      var monthly_income;
-      var credit_score;
-      
-      data_income_status.forEach(function (data) {
-          credit_score = data[1];
+  
+      data_income.forEach(function (data) {
+          data_credit_score = data[1];
           monthly_income = data[0];
 
-        cy.typeFieldsInCalculator(monthly_income, credit_score);
+        cy.typeFieldsInCalculator(monthly_income, data_credit_score);
         cy.get("input[placeholder='Enter Monthly Income']").eq(0).invoke('val').then((text) => {
           if (text.length > 12) {
             cy.verifyButton('disabled', 11)
@@ -206,22 +187,3 @@ context("Calculator App", () => {
     });
   });
 });
-
-  /*
-   * generate random float
-   */
-function getRandomFloat(min, max, decimals) {
-  const str = (Math.random() * (max - min) + min).toFixed(decimals);
-    return parseFloat(str);
-}
-
-  /*
-   * validation if its a number or not
-   */
-function checkNumber(x) {
-  var isNum = false;
-  if(typeof x == 'number' && !isNaN(x)){
-      isNum = true;
-  }
-  return isNum;
-}

@@ -42,6 +42,7 @@
    * 
    */
   Cypress.Commands.add('navToCalculator', () => {
+    cy.wait(200)
     cy.contains('h3', "Find out if you're prequalified").click();
   });
 
@@ -101,13 +102,11 @@
    * button either disabled or not and if enabled, have an option to click it
    *
    */
-  Cypress.Commands.add('submitButtonCalculator', (buttonLabel, statusButton = 'enabled', clk = false) => {
+  Cypress.Commands.add('clickButton', (buttonLabel) => {
     
-    cy.get("button[type='button']").eq(9).should(`be.${statusButton}`).then(() => {
+    cy.get("button[type='button']").eq(9).should(`be.enabled`).then(() => {
       //click button
-      if (clk) {
-       cy.get("button").contains(buttonLabel).click()
-      }
+      cy.get("button").contains(buttonLabel).click()
     })
   });
   
