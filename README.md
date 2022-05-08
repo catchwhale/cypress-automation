@@ -4,9 +4,8 @@ Welcome to QA Poplar Homes Automation.
 
 ## Folder Structure
 
-- fixtures - contains the test data. for the current setup, the current location is in the drive 
 
-- integration - contains the API, Backend and Functional test cases 
+- integration - contains the Functional test cases 
 
 - plugins - deals with operations outside the application under tests (i.e, database connections)
 
@@ -39,7 +38,6 @@ _ Format on Save - automatically formats the code once you save the file
 ## Post-Requisite
 
 After the cloning of this repository, please run "npm install" on windows and "sudo npm install" on linux / mac to install the dependencies.
-
 
 ## Running
 
