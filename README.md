@@ -1,6 +1,6 @@
 # QA Automation
 
-Welcome to QA Poplar Homes Automation.
+Welcome to QA Automation.
 
 ## Folder Structure
 
